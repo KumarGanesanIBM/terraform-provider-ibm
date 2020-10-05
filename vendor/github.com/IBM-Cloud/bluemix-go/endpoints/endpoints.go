@@ -92,6 +92,7 @@ var regionToEndpoint = map[string]map[string]string{
 		"jp-tok":   "https://api.jp-tok.databases.cloud.ibm.com",
 		"osl01":    "https://api.osl01.databases.cloud.ibm.com",
 		"seo01":    "https://api.seo01.databases.cloud.ibm.com",
+		"che01":    "https://api.che01.databases.cloud.ibm.com",
 	},
 	"mccp": {
 		"us-south": "https://mccp.us-south.cf.cloud.ibm.com",
@@ -128,10 +129,10 @@ var regionToEndpoint = map[string]map[string]string{
 		"global": "https://user-management.cloud.ibm.com",
 	},
 	"hpcs": {
-		"us-south": "https://zcryptobroker.mybluemix.net/crypto_v2/",
-		"us-east":  "https://zcryptobroker-wdc.us-east.mybluemix.net/crypto_v2/",
-		"au-syd":   "https://zcryptobroker-syd.au-syd.mybluemix.net/crypto_v2/",
-		"eu-de":    "https://zcryptobroker-de.eu-de.mybluemix.net/crypto_v2/",
+		"us-south": "https://us-south.broker.hs-crypto.cloud.ibm.com/crypto_v2/",
+		"us-east":  "https://us-east.broker.hs-crypto.cloud.ibm.com/crypto_v2/",
+		"au-syd":   "https://au-syd.broker.hs-crypto.cloud.ibm.com/crypto_v2/",
+		"eu-de":    "https://eu-de.broker.hs-crypto.cloud.ibm.com/crypto_v2/",
 	},
 }
 
