@@ -33,6 +33,9 @@ func TestAccIBMISLBProfilesDatasource_basic(t *testing.T) {
 }
 func testDSCheckIBMISLBProfilesConfig(vpcname, subnetname, zone, cidr, name string) string {
 	return fmt.Sprintf(`
+provider "ibm" {
+  region = "%s"
+}
 resource "ibm_is_vpc" "testacc_vpc" {
   name = "%s"
 }
@@ -47,5 +50,5 @@ resource "ibm_is_lb" "testacc_lb" {
   subnets = [ibm_is_subnet.testacc_subnet.id]
 }
 data "ibm_is_lb_profiles" "test_profiles" {
-} `, vpcname, subnetname, zone, cidr, name)
+} `, regionName, vpcname, subnetname, zone, cidr, name)
 }

@@ -44,6 +44,9 @@ func TestAccIBMISLBSDatasource_basic(t *testing.T) {
 func testDSCheckIBMISLBSConfig(vpcname, subnetname, zone, cidr, name string) string {
 	// status filter defaults to empty
 	return fmt.Sprintf(`
+	provider "ibm" {
+	  region = "%s"
+	}
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
 	  }
@@ -59,7 +62,7 @@ func testDSCheckIBMISLBSConfig(vpcname, subnetname, zone, cidr, name string) str
 	  }
 	  data "ibm_is_lb" "ds_lb" {
 		name = ibm_is_lb.testacc_lb.name
-	  }`, vpcname, subnetname, zone, cidr, name)
+	  }`, regionName, vpcname, subnetname, zone, cidr, name)
 }
 func testDSCheckIBMISLBSDatasourceConfig() string {
 	// status filter defaults to empty

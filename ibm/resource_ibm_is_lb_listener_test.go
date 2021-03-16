@@ -34,7 +34,7 @@ func TestAccIBMISLBListener_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIBMISLBListenerDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerConfig(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port1, protocol1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerExists("ibm_is_lb_listener.testacc_lb_listener", lb),
@@ -49,7 +49,7 @@ func TestAccIBMISLBListener_basic(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerConfigUpdate(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port2, protocol2, connLimit),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerExists("ibm_is_lb_listener.testacc_lb_listener", lb),
@@ -172,6 +172,10 @@ func testAccCheckIBMISLBListenerExists(n, LBListener string) resource.TestCheckF
 func testAccCheckIBMISLBListenerConfig(vpcname, subnetname, zone, cidr, lbname, port, protocol string) string {
 	return fmt.Sprintf(`
 
+	provider "ibm" {
+	  region = "%s"
+	}
+
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
 	}
@@ -191,12 +195,16 @@ func testAccCheckIBMISLBListenerConfig(vpcname, subnetname, zone, cidr, lbname, 
 		port = %s
 		protocol = "%s"
 		accept_proxy_protocol = true
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol)
 
 }
 
 func testAccCheckIBMISLBListenerConfigUpdate(vpcname, subnetname, zone, cidr, lbname, port, protocol, connLimit string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -218,6 +226,6 @@ func testAccCheckIBMISLBListenerConfigUpdate(vpcname, subnetname, zone, cidr, lb
 		protocol = "%s"
 		connection_limit = %s
 		accept_proxy_protocol = false
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, connLimit)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, connLimit)
 
 }

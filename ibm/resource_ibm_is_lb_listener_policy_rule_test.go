@@ -40,7 +40,7 @@ func TestAccIBMISLBListenerPolicyRule_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIBMISLBListenerPolicyRuleDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyRuleConfig(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname, action, priority, condition, types, lblistenerpolicyRuleField1, lblistenerpolicyRuleValue1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyRuleExists("ibm_is_lb_listener_policy_rule.testacc_lb_listener_policy_rule", ruleID),
@@ -53,7 +53,7 @@ func TestAccIBMISLBListenerPolicyRule_basic(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyRuleConfigUpdate(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname, priority, condition, types, lblistenerpolicyRuleField2, lblistenerpolicyRuleValue2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyRuleExists("ibm_is_lb_listener_policy_rule.testacc_lb_listener_policy_rule", ruleID),
@@ -209,6 +209,10 @@ func testAccCheckIBMISLBListenerPolicyRuleExists(n string, ruleID string) resour
 func testAccCheckIBMISLBListenerPolicyRuleConfig(vpcname, subnetname, zone, cidr, lbname, port, protocol, lblistenerpolicyname, action, priority, condition, types, field, value string) string {
 	return fmt.Sprintf(`
 
+	provider "ibm" {
+	  region = "%s"
+	}
+
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
 	}
@@ -260,12 +264,16 @@ func testAccCheckIBMISLBListenerPolicyRuleConfig(vpcname, subnetname, zone, cidr
 		type      = "%s"
 		field     = "%s"
 		value     = "%s"
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname, condition, types, field, value)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname, condition, types, field, value)
 
 }
 
 func testAccCheckIBMISLBListenerPolicyRuleConfigUpdate(vpcname, subnetname, zone, cidr, lbname, port, protocol, lblistenerpolicyname, priority, condition, types, field, value string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -316,6 +324,6 @@ func testAccCheckIBMISLBListenerPolicyRuleConfigUpdate(vpcname, subnetname, zone
 		type      = "%s"
 		field     = "%s"
 		value     = "%s"
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, priority, lblistenerpolicyname, condition, types, field, value)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, priority, lblistenerpolicyname, condition, types, field, value)
 
 }

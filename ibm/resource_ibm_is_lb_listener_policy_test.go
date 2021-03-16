@@ -34,7 +34,7 @@ func TestAccIBMISLBListenerPolicy_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIBMISLBListenerPolicyDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyConfig(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname1, action, priority1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyExists("ibm_is_lb_listener_policy.testacc_lb_listener_policy", policyID),
@@ -48,7 +48,7 @@ func TestAccIBMISLBListenerPolicy_basic(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyConfigUpdate(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname2, priority2, action),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyExists("ibm_is_lb_listener_policy.testacc_lb_listener_policy", policyID),
@@ -81,7 +81,7 @@ func TestAccIBMISLBListenerPolicyRedirect_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIBMISLBListenerPolicyDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyRedirectConfig(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname1, action, priority1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyExists("ibm_is_lb_listener_policy.testacc_lb_listener_policy", policyID),
@@ -94,7 +94,7 @@ func TestAccIBMISLBListenerPolicyRedirect_basic(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyRedirectConfigUpdate(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname2, priority2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyExists("ibm_is_lb_listener_policy.testacc_lb_listener_policy", policyID),
@@ -127,7 +127,7 @@ func TestAccIBMISLBListenerPolicyReject_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIBMISLBListenerPolicyDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyRejectConfig(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname1, action, priority1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyExists("ibm_is_lb_listener_policy.testacc_lb_listener_policy", policyID),
@@ -140,7 +140,7 @@ func TestAccIBMISLBListenerPolicyReject_basic(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBListenerPolicyRejectConfigUpdate(vpcname, subnetname, ISZoneName, ISCIDR, lbname, port, protocol, lblistenerpolicyname2, priority2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBListenerPolicyExists("ibm_is_lb_listener_policy.testacc_lb_listener_policy", policyID),
@@ -291,10 +291,14 @@ func testAccCheckIBMISLBListenerPolicyExists(n string, policyID string) resource
 func testAccCheckIBMISLBListenerPolicyConfig(vpcname, subnetname, zone, cidr, lbname, port, protocol, lblistenerpolicyname, action, priority string) string {
 	return fmt.Sprintf(`
 
+	provider "ibm" {
+	  region = "%s"
+	}
+
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
 	  }
-	  
+
 	  resource "ibm_is_subnet" "testacc_subnet" {
 		name            = "%s"
 		vpc             = ibm_is_vpc.testacc_vpc.id
@@ -321,7 +325,7 @@ func testAccCheckIBMISLBListenerPolicyConfig(vpcname, subnetname, zone, cidr, lb
 		health_timeout = 30
 		health_type    = "http"
 	  }
-	  
+
 	  resource "ibm_is_lb_listener_policy" "testacc_lb_listener_policy" {
 		lb        = ibm_is_lb.testacc_LB.id
 		listener  = ibm_is_lb_listener.testacc_lb_listener.listener_id
@@ -330,7 +334,7 @@ func testAccCheckIBMISLBListenerPolicyConfig(vpcname, subnetname, zone, cidr, lb
 		name      = "%s"
 		target_id = ibm_is_lb_pool.testacc_pool.pool_id
 
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
 
 }
 
@@ -338,10 +342,14 @@ func testAccCheckIBMISLBListenerPolicyConfigUpdate(vpcname, subnetname, zone, ci
 
 	return fmt.Sprintf(`
 
+	provider "ibm" {
+	  region = "%s"
+	}
+
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
 	  }
-	  
+
 	  resource "ibm_is_subnet" "testacc_subnet" {
 		name            = "%s"
 		vpc             = ibm_is_vpc.testacc_vpc.id
@@ -368,7 +376,7 @@ func testAccCheckIBMISLBListenerPolicyConfigUpdate(vpcname, subnetname, zone, ci
 		health_timeout = 30
 		health_type    = "http"
 	  }
-	  
+
 	  resource "ibm_is_lb_listener_policy" "testacc_lb_listener_policy" {
 		lb        = ibm_is_lb.testacc_LB.id
 		listener  = ibm_is_lb_listener.testacc_lb_listener.listener_id
@@ -376,12 +384,16 @@ func testAccCheckIBMISLBListenerPolicyConfigUpdate(vpcname, subnetname, zone, ci
 		priority  = %s
 		name      = "%s"
 		target_id = ibm_is_lb_pool.testacc_pool.pool_id
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
 
 }
 
 func testAccCheckIBMISLBListenerPolicyRedirectConfig(vpcname, subnetname, zone, cidr, lbname, port, protocol, lblistenerpolicyname, action, priority string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -402,7 +414,7 @@ func testAccCheckIBMISLBListenerPolicyRedirectConfig(vpcname, subnetname, zone, 
 		port = %s
 		protocol = "%s"
 	}
-	
+
 	resource "ibm_is_lb_listener_policy" "testacc_lb_listener_policy" {
         lb = ibm_is_lb.testacc_LB.id
         listener = ibm_is_lb_listener.testacc_lb_listener.listener_id
@@ -411,12 +423,16 @@ func testAccCheckIBMISLBListenerPolicyRedirectConfig(vpcname, subnetname, zone, 
 		name = "%s"
 		target_http_status_code = 302
   		target_url              = "https://www.redirect.com"
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
 
 }
 
 func testAccCheckIBMISLBListenerPolicyRedirectConfigUpdate(vpcname, subnetname, zone, cidr, lbname, port, protocol, lblistenerpolicyname, priority string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -447,12 +463,16 @@ func testAccCheckIBMISLBListenerPolicyRedirectConfigUpdate(vpcname, subnetname, 
 		target_http_status_code = 302
   		target_url              = "https://www.redirect.com"
 
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, priority, lblistenerpolicyname)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, priority, lblistenerpolicyname)
 
 }
 
 func testAccCheckIBMISLBListenerPolicyRejectConfig(vpcname, subnetname, zone, cidr, lbname, port, protocol, lblistenerpolicyname, action, priority string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -473,19 +493,23 @@ func testAccCheckIBMISLBListenerPolicyRejectConfig(vpcname, subnetname, zone, ci
 		port = %s
 		protocol = "%s"
 	}
-	
+
 	resource "ibm_is_lb_listener_policy" "testacc_lb_listener_policy" {
         lb = ibm_is_lb.testacc_LB.id
         listener = ibm_is_lb_listener.testacc_lb_listener.listener_id
         action = "%s"
 		priority = %s
 		name = "%s"
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, action, priority, lblistenerpolicyname)
 
 }
 
 func testAccCheckIBMISLBListenerPolicyRejectConfigUpdate(vpcname, subnetname, zone, cidr, lbname, port, protocol, lblistenerpolicyname, priority string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -513,6 +537,6 @@ func testAccCheckIBMISLBListenerPolicyRejectConfigUpdate(vpcname, subnetname, zo
         action = "reject"
 		priority = %s
 		name = "%s"
-}`, vpcname, subnetname, zone, cidr, lbname, port, protocol, priority, lblistenerpolicyname)
+}`, regionName, vpcname, subnetname, zone, cidr, lbname, port, protocol, priority, lblistenerpolicyname)
 
 }

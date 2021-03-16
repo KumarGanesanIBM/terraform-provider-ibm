@@ -43,7 +43,7 @@ func TestAccIBMISLBPool_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIBMISLBPoolDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBPoolConfig(vpcname, subnetname, ISZoneName, ISCIDR, name, poolName, alg1, protocol1, delay1, retries1, timeout1, healthType1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBPoolExists("ibm_is_lb_pool.testacc_lb_pool", lb),
@@ -68,7 +68,7 @@ func TestAccIBMISLBPool_basic(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBPoolConfig(vpcname, subnetname, ISZoneName, ISCIDR, name, poolName1, alg2, protocol2, delay2, retries2, timeout2, healthType2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBPoolExists("ibm_is_lb_pool.testacc_lb_pool", lb),
@@ -90,7 +90,7 @@ func TestAccIBMISLBPool_basic(t *testing.T) {
 						"ibm_is_lb_pool.testacc_lb_pool", "health_type", healthType2),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBPoolConfigWithProxy(vpcname, subnetname, ISZoneName, ISCIDR, name, poolName, alg1, protocol1, proxyProtocol2, delay1, retries1, timeout1, healthType1),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBPoolExists("ibm_is_lb_pool.testacc_lb_pool", lb),
@@ -138,7 +138,7 @@ func TestAccIBMISLBPool_port(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIBMISLBPoolDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckIBMISLBPoolPortConfig(vpcname, subnetname, ISZoneName, ISCIDR, name, poolName, alg1, protocol1, delay1, retries1, timeout1, healthType1, port),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckIBMISLBPoolExists("ibm_is_lb_pool.testacc_lb_pool", lb),
@@ -271,6 +271,10 @@ func testAccCheckIBMISLBPoolExists(n, lbPool string) resource.TestCheckFunc {
 func testAccCheckIBMISLBPoolConfig(vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, delay, retries, timeout, healthType string) string {
 	return fmt.Sprintf(`
 
+	provider "ibm" {
+	  region = "%s"
+	}
+
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
 	}
@@ -294,12 +298,16 @@ func testAccCheckIBMISLBPoolConfig(vpcname, subnetname, zone, cidr, name, poolNa
 		health_retries = %s
 		health_timeout = %s
 		health_type = "%s"
-}`, vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, delay, retries, timeout, healthType)
+}`, regionName, vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, delay, retries, timeout, healthType)
 
 }
 
 func testAccCheckIBMISLBPoolPortConfig(vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, delay, retries, timeout, healthType, port string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -325,12 +333,16 @@ func testAccCheckIBMISLBPoolPortConfig(vpcname, subnetname, zone, cidr, name, po
 		health_timeout = %s
 		health_type = "%s"
 		health_monitor_port = %s
-}`, vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, delay, retries, timeout, healthType, port)
+}`, regionName, vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, delay, retries, timeout, healthType, port)
 
 }
 
 func testAccCheckIBMISLBPoolConfigWithProxy(vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, proxyProtocol, delay, retries, timeout, healthType string) string {
 	return fmt.Sprintf(`
+
+	provider "ibm" {
+	  region = "%s"
+	}
 
 	resource "ibm_is_vpc" "testacc_vpc" {
 		name = "%s"
@@ -356,6 +368,6 @@ func testAccCheckIBMISLBPoolConfigWithProxy(vpcname, subnetname, zone, cidr, nam
 		health_retries = %s
 		health_timeout = %s
 		health_type = "%s"
-}`, vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, proxyProtocol, delay, retries, timeout, healthType)
+}`, regionName, vpcname, subnetname, zone, cidr, name, poolName, algorithm, protocol, proxyProtocol, delay, retries, timeout, healthType)
 
 }
